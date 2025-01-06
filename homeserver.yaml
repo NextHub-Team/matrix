@@ -1,0 +1,193 @@
+# Configuration file for Synapse.
+#
+# This is a YAML file: see [1] for a quick introduction. Note in particular
+# that *indentation is important*: all the elements of a list or dictionary
+# should have the same indentation.
+#
+# [1] https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+#
+# For more information on how to configure Synapse, including a complete accounting of
+# each option, go to docs/usage/configuration/config_documentation.md or
+# https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
+
+server_name: "matrix.next-hub.app"
+pid_file: /data/homeserver.pid
+serve_server_wellknown: true
+public_baseurl: "https://matrix.next-hub.app:8008"
+default_identity_server: https://matrix.org
+
+tls_certificate_path: "/data/ssl/live/matrix.next-hub.app/fullchain.pem"
+tls_private_key_path: "/data/ssl/live/matrix.next-hub.app/privkey.pem"
+
+no_tls: false
+tls_fingerprints: []
+soft_file_limit: 0
+
+listeners:
+  - port: 8448
+    bind_addresses: ["0.0.0.0"]
+    type: http
+    tls: true
+    x_forwarded: false
+    resources:
+      - names: [client]
+        compress: true
+      - names: [federation]
+        compress: false
+
+  - port: 8088
+    tls: false
+    bind_addresses: ["0.0.0.0"]
+    type: http
+    x_forwarded: true
+    resources:
+      - names: [client]
+        compress: true
+      # - names: [federation]
+      #   compress: false
+
+federation_ip_range_blacklist:
+  - "127.0.0.0/8"
+  - "10.0.0.0/8"
+  - "172.16.0.0/12"
+  - "192.168.0.0/16"
+  - "100.64.0.0/10"
+  - "169.254.0.0/16"
+  - "::1/128"
+  - "fe80::/64"
+  - "fc00::/7"
+
+url_preview_enabled: True
+url_preview_ip_range_blacklist:
+  - "127.0.0.0/8" # Loopback addresses (localhost)
+  - "10.0.0.0/8" # Private IP range
+  - "172.16.0.0/12" # Private IP range
+  - "192.168.0.0/16" # Private IP range
+  - "100.64.0.0/10" # Carrier-grade NAT
+  - "192.0.0.0/24" # IETF Protocol Assignments
+  - "169.254.0.0/16" # Link-local addresses
+  - "192.88.99.0/24" # Deprecated IPv6 to IPv4 relay
+  - "198.18.0.0/15" # Network benchmark testing
+  - "192.0.2.0/24" # TEST-NET-1, documentation/example network
+  - "198.51.100.0/24" # TEST-NET-2, documentation/example network
+  - "203.0.113.0/24" # TEST-NET-3, documentation/example network
+  - "224.0.0.0/4" # Multicast
+  - "::1/128" # IPv6 loopback address
+  - "fe80::/10" # IPv6 link-local addresses
+  - "fc00::/7" # IPv6 unique local addresses
+  - "2001:db8::/32" # IPv6 documentation network
+  - "ff00::/8" # IPv6 multicast
+  - "fec0::/10" # Deprecated IPv6 site-local addresses
+
+# url_preview_ip_range_whitelist:
+#   - '192.168.1.1'   # Allow URL previews for a specific internal service
+max_spider_size: "10M"
+
+database:
+  name: psycopg2
+  txn_limit: 10000
+  args:
+    user: synapse
+    password: 6DPhKWcoDsCq46a6
+    dbname: synapse
+    host: synapse-db-server
+    port: 5432
+    cp_min: 5
+    cp_max: 10
+
+log_config: "/data/matrix.next-hub.app.log.config"
+
+media_store_path: /data/media_store
+uploads_path: "/data/uploads"
+
+# The largest allowed upload size in bytes
+max_upload_size: "100M"
+
+# Maximum number of pixels that will be thumbnailed
+max_image_pixels: "32M"
+
+media_retention:
+  local_media_lifetime: 90d # Purge local media after 90 days of inactivity
+  remote_media_lifetime: 14d # Purge remote cached media after 14 days of inactivity
+
+registration_shared_secret: "FOgSrk^v2SfGv-tdWVNUP36P#AXWHx:3HVIDX.^AGSjpLtJwB,"
+inhibit_user_in_use_error: true # errors raised when registering a new account if the user ID already exists.
+
+report_stats: true
+enable_registration: true
+disable_msisdn_registration: true
+registrations_require_3pid:
+  - email
+  # - msisdn
+
+email:
+  smtp_host: mail.next-hub.app
+  smtp_port: 587
+  smtp_user: "support@next-hub.app"
+  smtp_pass: "At747372$#@"
+  force_tls: false
+  require_transport_security: true
+  enable_tls: true
+  notif_from: "Next-Hub <support@next-hub.app>"
+  app_name: "Next-Hub"
+  enable_notifs: true
+  notif_for_new_users: true
+  #client_base_url: "http://localhost/riot"
+  validation_token_lifetime: 15m
+  #invite_client_location: https://app.element.io
+
+  subjects:
+    message_from_person_in_room: "[%(app)s] You have a message on %(app)s from %(person)s in the %(room)s room..."
+    message_from_person: "[%(app)s] You have a message on %(app)s from %(person)s..."
+    messages_from_person: "[%(app)s] You have messages on %(app)s from %(person)s..."
+    messages_in_room: "[%(app)s] You have messages on %(app)s in the %(room)s room..."
+    messages_in_room_and_others: "[%(app)s] You have messages on %(app)s in the %(room)s room and others..."
+    messages_from_person_and_others: "[%(app)s] You have messages on %(app)s from %(person)s and others..."
+    invite_from_person_to_room: "[%(app)s] %(person)s has invited you to join the %(room)s room on %(app)s..."
+    invite_from_person: "[%(app)s] %(person)s has invited you to chat on %(app)s..."
+    password_reset: "[%(server_name)s] Password reset"
+    email_validation: "[%(server_name)s] Validate your email"
+
+allow_guest_access: false
+enable_metrics: true
+
+expire_access_token: true # Enables token expiration
+refresh_token_lifetime: 2d # Optional, controls how long refresh tokens last
+access_token_lifetime: 1d # Optional, controls how long access tokens last
+
+macaroon_secret_key: "H.k*Z0;ER2Hi5jM-Pn;KAcoJm=.8WkgaA+pksIfMhb59Elt#Om"
+form_secret: "A3n&Xv=:R*d2UCSSThfZLEOYR;eDKdeDK~*9f=sPXl:_~jiPyL"
+
+signing_key_path: "/data/matrix.next-hub.app.signing.key"
+
+trusted_key_servers:
+  - server_name: "matrix.org"
+suppress_key_server_warning: true
+
+old_signing_keys: {}
+key_refresh_interval: 1d
+delete_stale_devices_after: 1y
+
+event_cache_size: 15K
+caches:
+  global_factor: 1.0
+  per_cache_factors:
+    get_users_who_share_room_with_user: 2.0
+  sync_response_cache_duration: 2m
+  cache_autotuning:
+    max_cache_memory_usage: 1024M
+    target_cache_memory_usage: 758M
+    min_cache_ttl: 5m
+
+password_config:
+  enabled: true
+  localdb_enabled: true
+  pepper: "EVEN_MORE_SECRET"
+  policy:
+    enabled: true
+    minimum_length: 8
+    require_digit: false
+    require_symbol: false
+    require_lowercase: true
+    require_uppercase: true
+# vim:ft=yaml
