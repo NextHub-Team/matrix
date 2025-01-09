@@ -5,29 +5,29 @@ events {
 http {
   server {
     listen 443 ssl;
-    server_name matrix.next-hub.app:8088;
+    server_name matrix.<your-server-domain>:8088;
 
     # SSL certificate paths
-    ssl_certificate /etc/ssl/certs/live/matrix.next-hub.app/fullchain.pem;
-    ssl_certificate_key /etc/ssl/certs/live/matrix.next-hub.app/privkey.pem;
+    ssl_certificate /etc/ssl/certs/live/matrix.<your-server-domain>/fullchain.pem;
+    ssl_certificate_key /etc/ssl/certs/live/matrix.<your-server-domain>/privkey.pem;
 
     # /.well-known/matrix/server endpoint for federation discovery
     location /.well-known/matrix/server {
       default_type application/json;
       add_header Access-Control-Allow-Origin *;
-      return 200 '{"m.server": "matrix.next-hub.app:8448"}';
+      return 200 '{"m.server": "matrix.<your-server-domain>:8448"}';
     }
 
     # /.well-known/matrix/client endpoint for client configuration
     location /.well-known/matrix/client {
       default_type application/json;
       add_header Access-Control-Allow-Origin *;
-      return 200 '{"m.homeserver": {"base_url": "https://matrix.next-hub.app:8008"}}';
+      return 200 '{"m.homeserver": {"base_url": "https://matrix.<your-server-domain>:8008"}}';
     }
 
 # Health check for Synapse
 location /healthcheck {
-    proxy_pass http://matrix.next-hub.app:8088/_synapse/admin/v1/server_version;
+    proxy_pass http://matrix.<your-server-domain>:8088/_synapse/admin/v1/server_version;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -90,27 +90,27 @@ location @healthcheck_fail {
       return 200 '{
         "contacts": [
           {
-            "email_address": "support@next-hub.app",
-            "matrix_id": "@support:next-hub.app",
+            "email_address": "support@<your-server-domain>",
+            "matrix_id": "@support:<your-server-domain>",
             "role": "m.role.admin"
           },
           {
-            "email_address": "admin@next-hub.app",
-            "matrix_id": "@admin:next-hub.app",
+            "email_address": "admin@<your-server-domain>",
+            "matrix_id": "@admin:<your-server-domain>",
             "role": "m.role.admin"
           },
           {
-            "email_address": "security@next-hub.app",
+            "email_address": "security@<your-server-domain>",
             "role": "m.role.security"
           }
         ],
-        "support_page": "https://matrix.next-hub.app:8008/support.html"
+        "support_page": "https://matrix.<your-server-domain>:8008/support.html"
       }';
     }
 
     # Proxy to Synapse for other traffic
     location / {
-      proxy_pass http://matrix.next-hub.app:8088;
+      proxy_pass http://matrix.<your-server-domain>:8088;
       proxy_set_header Host $host;
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

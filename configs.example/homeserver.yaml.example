@@ -10,14 +10,14 @@
 # each option, go to docs/usage/configuration/config_documentation.md or
 # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
 
-server_name: "matrix.next-hub.app"
+server_name: "matrix.<yourr-server-domain>"
 pid_file: /data/homeserver.pid
 serve_server_wellknown: true
-public_baseurl: "https://matrix.next-hub.app:8008"
+public_baseurl: "https://matrix.<yourr-server-domain>:8008"
 default_identity_server: https://matrix.org
 
-tls_certificate_path: "/data/ssl/live/matrix.next-hub.app/fullchain.pem"
-tls_private_key_path: "/data/ssl/live/matrix.next-hub.app/privkey.pem"
+tls_certificate_path: "/data/ssl/live/matrix.<yourr-server-domain>/fullchain.pem"
+tls_private_key_path: "/data/ssl/live/matrix.<yourr-server-domain>/privkey.pem"
 
 no_tls: false
 tls_fingerprints: []
@@ -95,7 +95,7 @@ database:
     cp_min: 5
     cp_max: 10
 
-log_config: "/data/matrix.next-hub.app.log.config"
+log_config: "/data/matrix.<yourr-server-domain>.log.config"
 
 media_store_path: /data/media_store
 uploads_path: "/data/uploads"
@@ -110,7 +110,7 @@ media_retention:
   local_media_lifetime: 90d # Purge local media after 90 days of inactivity
   remote_media_lifetime: 14d # Purge remote cached media after 14 days of inactivity
 
-registration_shared_secret: "FOgSrk^v2SfGv-tdWVNUP36P#AXWHx:3HVIDX.^AGSjpLtJwB,"
+
 inhibit_user_in_use_error: true # errors raised when registering a new account if the user ID already exists.
 
 report_stats: true
@@ -121,14 +121,14 @@ registrations_require_3pid:
   # - msisdn
 
 email:
-  smtp_host: mail.next-hub.app
+  smtp_host: mail.<yourr-server-domain>
   smtp_port: 587
-  smtp_user: "support@next-hub.app"
+  smtp_user: "support@<yourr-server-domain>"
   smtp_pass: "Atat747372$#@"
   force_tls: false
   require_transport_security: true
   enable_tls: true
-  notif_from: "Next-Hub <support@next-hub.app>"
+  notif_from: "Next-Hub <support@<yourr-server-domain>>"
   app_name: "Next-Hub"
   enable_notifs: true
   notif_for_new_users: true
@@ -157,8 +157,9 @@ access_token_lifetime: 1d # Optional, controls how long access tokens last
 
 macaroon_secret_key: "H.k*Z0;ER2Hi5jM-Pn;KAcoJm=.8WkgaA+pksIfMhb59Elt#Om"
 form_secret: "A3n&Xv=:R*d2UCSSThfZLEOYR;eDKdeDK~*9f=sPXl:_~jiPyL"
+registration_shared_secret: "FOgSrk^v2SfGv-tdWVNUP36P#AXWHx:3HVIDX.^AGSjpLtJwB,"
 
-signing_key_path: "/data/matrix.next-hub.app.signing.key"
+signing_key_path: "/data/matrix.<yourr-server-domain>.signing.key"
 
 trusted_key_servers:
   - server_name: "matrix.org"
