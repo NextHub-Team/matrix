@@ -176,3 +176,5 @@ logs
 certs
 cert
 .certs
+secret*.yaml
+
