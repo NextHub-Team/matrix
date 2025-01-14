@@ -1,6 +1,6 @@
 services:
   synapse:
-    image: ghcr.io/element-hq/synapse:latest
+    image: ghcr.io/element-hq/synapse:v1.121.1
     container_name: synapse
     hostname: synapse-server
     ports:
@@ -79,23 +79,6 @@ services:
       retries: 3
     networks:
       - default
-
-
-  certbot:
-    image: certbot/certbot:latest # Use the latest Certbot image
-    profiles:
-      - certbot
-    container_name: certbot # Name the container 'certbot'
-    hostname: certbot-server # Set the internal hostname of the container to 'certbot-server'
-    volumes:
-      - ./certs:/etc/letsencrypt # Mount the directory to store Let's Encrypt certificates
-      - ./certs:/var/log/letsencrypt/ # Mount the directory to store Certbot logs
-    command: certonly --standalone --force-renewal --email ${TTL_EMAIL} -d ${SYNAPSE_SERVER_NAME} --agree-tos
-    networks:
-      - default
-    ports:
-      - 80:80 # Expose port 80 externally to handle the HTTP challenge for certificate generation and renewal
-
 
 volumes:
   synapse-db:
